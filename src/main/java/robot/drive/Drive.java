@@ -20,7 +20,7 @@ public class Drive extends SubsystemBase {
     public Drive() {
         for (CANSparkMax spark : List.of(leftLeader, leftFollower, rightLeader, rightFollower)) {
 	        spark.restoreFactoryDefaults();
-            spark.setIdleMode(IdleMode.kBrake);
+          spark.setIdleMode(IdleMode.kBrake);
     }
     rightFollower.follow(rightLeader);
     leftFollower.follow(leftLeader);
