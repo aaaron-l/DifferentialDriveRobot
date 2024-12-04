@@ -31,6 +31,7 @@ import robot.drive.Drive;
  */
 public class Robot extends CommandRobot implements Logged {
   // INPUT DEVICES
+  private final CommandXboxController operator = new CommandXboxController(OI.OPERATOR);
   private final CommandXboxController driver = new CommandXboxController(OI.DRIVER);
 
   private final PowerDistribution pdh = new PowerDistribution();
