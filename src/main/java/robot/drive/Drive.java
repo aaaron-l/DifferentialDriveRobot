@@ -1,11 +1,13 @@
 package robot.drive;
 
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import robot.Ports;
 
@@ -27,5 +29,8 @@ public class Drive extends SubsystemBase {
   private void drive(double leftSpeed, double rightSpeed) {
     leftLeader.set(leftSpeed);
     rightLeader.set(rightSpeed);
+  }
+    public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight){
+    return run(() -> drive(vLeft.getAsDouble(), vRight.getAsDouble()));
   }
 }
