@@ -1,5 +1,3 @@
 package robot.drive;
 
-public class DriveConstants {
-    
-}
+public class DriveConstants {}

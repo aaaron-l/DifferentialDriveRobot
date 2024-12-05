@@ -3,8 +3,6 @@ package robot;
 import static edu.wpi.first.units.Units.Seconds;
 import static robot.Constants.PERIOD;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
