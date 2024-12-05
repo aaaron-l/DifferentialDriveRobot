@@ -1,8 +1,8 @@
 package robot.drive;
 
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
+import java.util.function.DoubleSupplier;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -20,7 +20,7 @@ public class Drive extends SubsystemBase {
     public Drive() {
         for (CANSparkMax spark : List.of(leftLeader, leftFollower, rightLeader, rightFollower)) {
 	        spark.restoreFactoryDefaults();
-          spark.setIdleMode(IdleMode.kBrake);
+            spark.setIdleMode(IdleMode.kBrake);
     }
     rightFollower.follow(rightLeader);
     leftFollower.follow(leftLeader);
@@ -30,7 +30,7 @@ public class Drive extends SubsystemBase {
     leftLeader.set(leftSpeed);
     rightLeader.set(rightSpeed);
   }
-    public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight){
+  public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight) {
     return run(() -> drive(vLeft.getAsDouble(), vRight.getAsDouble()));
   }
 }

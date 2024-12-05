@@ -75,7 +75,7 @@ public class Robot extends CommandRobot implements Logged {
 
   /** Configures trigger -> command bindings. */
   private void configureBindings() {
-    drive.setDefaultCommand(drive.drive(driver::getLeftY, driver::getRightY));
+    drive.setDefaultCommand(Drive.drive(driver::getLeftY, driver::getRightY));
   }
 
   /**
