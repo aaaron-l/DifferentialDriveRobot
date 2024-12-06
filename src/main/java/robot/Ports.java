@@ -1,7 +1,5 @@
 package robot;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-
 public final class Ports {
   // TODO: Add and change all ports as needed.
   public static final class OI {
@@ -16,6 +14,4 @@ public final class Ports {
     public static final int LEFT_FOLLOWER = 5;
     public static final int GYRO_CHANNEL = 1;
   }
-
-
 }
