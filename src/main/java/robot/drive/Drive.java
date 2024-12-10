@@ -56,6 +56,19 @@ public class Drive extends SubsystemBase {
     rightLeader.set(rightSpeed);
   }
 
+  private void updateOdometry(Rotation2d rotation) {
+    odometry.update(rotation, leftEncoder.getPosition(), rightEncoder.getPosition());
+  }
+
+  @Override
+  public void periodic() {
+    updateOdometry(gyro.getRotation2d());
+  }
+
+  public Pose2d pose() {
+    return odometry.getPoseMeters();
+  }
+
   public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight) {
     return run(() -> drive(vLeft.getAsDouble(), vRight.getAsDouble()));
   }
