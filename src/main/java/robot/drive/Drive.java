@@ -4,17 +4,24 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+
+import robot.Constants;
 import robot.Ports;
+import robot.Robot;
+import robot.drive.DriveConstants;
 import robot.drive.DriveConstants.FF;
 import robot.drive.DriveConstants.PID;
 
@@ -53,6 +60,18 @@ public class Drive extends SubsystemBase {
     gyro.reset();
 
     odometry = new DifferentialDriveOdometry(new Rotation2d(), 0, 0, new Pose2d());
+
+    // ...
+    driveSim =
+    new DifferentialDrivetrainSim(
+        DCMotor.getMiniCIM(2),
+        DriveConstants.GEARING,
+        DriveConstants.MOI,
+        DriveConstants.DRIVE_MASS,
+        DriveConstants.WHEEL_RADIUS,
+        DriveConstants.TRACK_WIDTH,
+        DriveConstants.STD_DEVS);
+    //...
   }
 
   private void drive(double leftSpeed, double rightSpeed) {
@@ -61,19 +80,22 @@ public class Drive extends SubsystemBase {
 
     final double realLeftSpeed = leftSpeed * DriveConstants.MAX_SPEED;
     final double realRightSpeed = rightSpeed * DriveConstants.MAX_SPEED;
-
+        
     final double leftFeedforward = feedforward.calculate(realLeftSpeed);
     final double rightFeedforward = feedforward.calculate(realRightSpeed);
-
-    final double leftPID = leftPIDController.calculate(leftEncoder.getVelocity(), realLeftSpeed);
-    final double rightPID =
+      
+    final double leftPID = 
+      leftPIDController.calculate(leftEncoder.getVelocity(), realLeftSpeed);
+    final double rightPID = 
         rightPIDController.calculate(rightEncoder.getVelocity(), realRightSpeed);
-
+    
     double leftVoltage = leftPID + leftFeedforward;
     double rightVoltage = rightPID + rightFeedforward;
-
+  
     leftLeader.setVoltage(leftVoltage);
     rightLeader.setVoltage(rightVoltage);
+
+    driveSim.setInputs(leftVoltage, rightVoltage);
   }
 
   private void updateOdometry(Rotation2d rotation) {
@@ -83,6 +105,8 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry(gyro.getRotation2d());
+    updateOdometry(Robot.isReal() ? gyro.getRotation2d() :  
+    driveSim.getHeading());
   }
 
   public Pose2d pose() {
@@ -95,6 +119,11 @@ public class Drive extends SubsystemBase {
 
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(FF.kS, FF.kV);
 
-  private final PIDController leftPIDController = new PIDController(PID.kP, PID.kI, PID.kD);
-  private final PIDController rightPIDController = new PIDController(PID.kP, PID.kI, PID.kD);
+    private final PIDController leftPIDController =
+      new PIDController(PID.kP, PID.kI, PID.kD);
+  private final PIDController rightPIDController =
+      new PIDController(PID.kP, PID.kI, PID.kD);
+
+
+  private final DifferentialDrivetrainSim driveSim;
 }
